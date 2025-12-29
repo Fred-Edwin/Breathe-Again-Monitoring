@@ -66,14 +66,14 @@ class ZoneStateService {
             return state.anomalyType;
         }
 
-        // 1.5% chance of new anomaly
-        if (Math.random() < 0.015) {
+        // 5% chance of new anomaly (increased for better visibility)
+        if (Math.random() < 0.05) {
             const rand = Math.random();
             let type: 'flatline' | 'out_of_range' | 'no_recovery';
 
-            if (rand < 0.05) {
+            if (rand < 0.1) {
                 type = 'flatline';
-            } else if (rand < 0.65) {
+            } else if (rand < 0.75) {
                 type = 'out_of_range';
             } else {
                 type = 'no_recovery';
