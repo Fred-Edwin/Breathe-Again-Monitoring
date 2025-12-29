@@ -1,0 +1,146 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Top-level site or building with biophilic systems
+model Installation {
+  id         String   @id @default(uuid())
+  name       String
+  location   String
+  status     InstallationStatus @default(active)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  
+  gardens    Garden[]
+
+  @@map("installation")
+}
+
+enum InstallationStatus {
+  active
+  inactive
+  maintenance
+}
+
+// A biophilic system installation (e.g., vertical garden wall)
+model Garden {
+  id             String   @id @default(uuid())
+  installationId String   @map("installation_id")
+  name           String
+  type           GardenType
+  orientation    Orientation
+  size           Json     // { width: number, height: number, unit: 'meters' }
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  
+  installation   Installation @relation(fields: [installationId], references: [id], onDelete: Cascade)
+  zones          Zone[]
+
+  @@map("garden")
+}
+
+enum GardenType {
+  vertical_garden
+  green_roof
+  living_wall
+}
+
+enum Orientation {
+  north
+  south
+  east
+  west
+  interior
+}
+
+// A subsection of a garden with specific plant types
+model Zone {
+  id        String   @id @default(uuid())
+  gardenId  String   @map("garden_id")
+  name      String
+  plantType String   @map("plant_type")
+  exposure  Exposure
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  garden    Garden   @relation(fields: [gardenId], references: [id], onDelete: Cascade)
+  readings  MetricReading[]
+  insights  Insight[]
+
+  @@map("zone")
+}
+
+enum Exposure {
+  low
+  medium
+  high
+}
+
+// Defines what environmental parameters are measured
+model Metric {
+  key         String   @id // 'soil_moisture', 'temperature', 'humidity', 'light'
+  unit        String
+  idealMin    Float    @map("ideal_min")
+  idealMax    Float    @map("ideal_max")
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  readings    MetricReading[]
+  insights    Insight[]
+
+  @@map("metric")
+}
+
+// Time-series sensor measurements
+model MetricReading {
+  id        String   @id @default(uuid())
+  zoneId    String   @map("zone_id")
+  metricKey String   @map("metric_key")
+  value     Float
+  timestamp DateTime
+  source    DataSource
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  zone      Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  metric    Metric   @relation(fields: [metricKey], references: [key], onDelete: Cascade)
+
+  @@index([zoneId, metricKey, timestamp(sort: Desc)], name: "idx_readings_zone_metric_time")
+  @@index([timestamp(sort: Desc)], name: "idx_readings_timestamp")
+  @@map("metric_reading")
+}
+
+enum DataSource {
+  mock
+  device
+}
+
+// Generated interpretations and alerts based on rules evaluation
+model Insight {
+  id          String   @id @default(uuid())
+  zoneId      String?  @map("zone_id")
+  metricKey   String?  @map("metric_key")
+  severity    Severity
+  explanation String   @db.Text
+  confidence  Float    // 0.0 - 1.0
+  createdAt   DateTime @default(now()) @map("created_at")
+  resolvedAt  DateTime? @map("resolved_at")
+  
+  zone        Zone?    @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  metric      Metric?  @relation(fields: [metricKey], references: [key], onDelete: Cascade)
+
+  @@map("insight")
+}
+
+enum Severity {
+  info
+  warning
+  critical
+}
