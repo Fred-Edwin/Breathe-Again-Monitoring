@@ -1,11 +1,12 @@
 import cron from 'node-cron';
+import type { ScheduledTask } from 'node-cron';
 import { PrismaClient } from '@prisma/client';
 import { simulationService } from '../services/simulationService';
 import { rulesEngine } from '../services/rulesEngine';
 
 const prisma = new PrismaClient();
 
-let cronJob: cron.ScheduledTask | null = null;
+let cronJob: ScheduledTask | null = null;
 
 /**
  * Generate mock sensor readings for all zones

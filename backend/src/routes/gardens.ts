@@ -58,10 +58,10 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ error: 'Garden not found' });
         }
 
-        res.json({ garden });
+        return res.json({ garden });
     } catch (error) {
         console.error('Error fetching garden:', error);
-        res.status(500).json({ error: 'Failed to fetch garden' });
+        return res.status(500).json({ error: 'Failed to fetch garden' });
     }
 });
 

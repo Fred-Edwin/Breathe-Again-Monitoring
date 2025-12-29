@@ -35,10 +35,10 @@ router.get('/:key', async (req, res) => {
             return res.status(404).json({ error: 'Metric not found' });
         }
 
-        res.json({ metric });
+        return res.json({ metric });
     } catch (error) {
         console.error('Error fetching metric:', error);
-        res.status(500).json({ error: 'Failed to fetch metric' });
+        return res.status(500).json({ error: 'Failed to fetch metric' });
     }
 });
 

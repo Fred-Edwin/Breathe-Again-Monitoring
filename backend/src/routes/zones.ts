@@ -101,14 +101,14 @@ router.get('/:id', async (req, res) => {
             },
         });
 
-        res.json({
+        return res.json({
             zone,
             latestReadings: latestReadings.filter(Boolean),
             insights,
         });
     } catch (error) {
         console.error('Error fetching zone:', error);
-        res.status(500).json({ error: 'Failed to fetch zone' });
+        return res.status(500).json({ error: 'Failed to fetch zone' });
     }
 });
 

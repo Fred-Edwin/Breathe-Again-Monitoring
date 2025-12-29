@@ -55,10 +55,10 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ error: 'Installation not found' });
         }
 
-        res.json({ installation });
+        return res.json({ installation });
     } catch (error) {
         console.error('Error fetching installation:', error);
-        res.status(500).json({ error: 'Failed to fetch installation' });
+        return res.status(500).json({ error: 'Failed to fetch installation' });
     }
 });
 
