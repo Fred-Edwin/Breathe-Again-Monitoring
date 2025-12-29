@@ -4,7 +4,7 @@ import type { Zone, Garden, Installation, Metric, Reading, Insight } from './typ
 
 // Create axios instance with base configuration
 const api = axios.create({
-    baseURL: '/api', // Vite proxy will forward to localhost:3001
+    baseURL: import.meta.env.VITE_API_URL || '/api', // Use env var in production, proxy in dev
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
