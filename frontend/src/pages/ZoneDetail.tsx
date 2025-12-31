@@ -4,6 +4,7 @@ import { useZone } from '../hooks/useZones'
 import MetricGauge from '../components/ui/MetricGauge'
 import TimeSeriesChart from '../components/charts/TimeSeriesChart'
 import InsightCard from '../components/insights/InsightCard'
+import PageHero from '../components/ui/PageHero'
 import { SkeletonCard, SkeletonMetric } from '../components/ui/Skeleton'
 import ErrorState from '../components/ui/ErrorState'
 
@@ -59,23 +60,27 @@ export default function ZoneDetail() {
     const metricKeys = ['soil_moisture', 'temperature', 'humidity', 'light']
 
     return (
-        <div className="p-8">
-            <div className="max-w-7xl mx-auto">
-                {/* Back Button */}
+        <div>
+            {/* Hero Section */}
+            <PageHero
+                image="/images/hero/context_healthy_growth_1767170338458.png"
+                title={name}
+                subtitle={plantType}
+                height="40vh"
+                overlay="gradient"
+            >
                 <Link
                     to="/zones"
-                    className="inline-flex items-center gap-2 text-primary-700 hover:text-primary-600 mb-6 transition-colors"
+                    className="inline-flex items-center gap-2 text-white/90 hover:text-white mb-4"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Zones
                 </Link>
+            </PageHero>
 
-                {/* Zone Header */}
-                <div className="card mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">{name}</h1>
-                    <p className="text-lg text-gray-600 mb-4">{plantType}</p>
-
-                    <div className="flex flex-wrap gap-3">
+            <div className="p-8">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex flex-wrap gap-3 mb-8">
                         <span className="px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-700 capitalize">
                             {exposure} Exposure
                         </span>
@@ -179,3 +184,4 @@ export default function ZoneDetail() {
         </div>
     )
 }
+

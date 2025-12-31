@@ -9,6 +9,7 @@ const Overview = lazy(() => import('./pages/Overview'))
 const ZonesList = lazy(() => import('./pages/ZonesList'))
 const ZoneDetail = lazy(() => import('./pages/ZoneDetail'))
 const InsightsCenter = lazy(() => import('./pages/InsightsCenter'))
+const GardenView = lazy(() => import('./pages/GardenView'))
 
 // Create a client with optimized defaults
 const queryClient = new QueryClient({
@@ -64,6 +65,14 @@ function App() {
               element={
                 <Suspense fallback={<PageLoader />}>
                   <ZoneDetail />
+                </Suspense>
+              }
+            />
+            <Route
+              path="gardens/:id"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <GardenView />
                 </Suspense>
               }
             />
